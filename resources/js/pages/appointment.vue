@@ -1,11 +1,11 @@
-<template>
+<template lang="">
     <div>
-        <h1 class="text-center">Laravel && Vue</h1>
+        <h1>Appointment Page</h1>
     </div>
 </template>
 <script>
 export default {
-
+    name:"Appointment",
 }
 </script>
 <style lang="">

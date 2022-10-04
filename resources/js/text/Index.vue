@@ -262,6 +262,9 @@
     </div>
 </template>
 <script>
+import toastr from 'toastr';
+
+
 export default {
     name: "Add",
     data() {
@@ -284,6 +287,7 @@ export default {
     },
     mounted() {
         this.fachData();
+        // toastr.info('Success')
         // this.editFrom();
     },
     methods: {
@@ -307,8 +311,12 @@ export default {
                     console.log(res.status);
                     if (res.status === 201) {
                         this.fachData();
-                        this.form = "";
+                        this.form.name    = "";
+                        this.form.email   = "";
+                        this.form.phone   = "";
+                        this.form.address = "";
                         $("#add_new").modal("hide");
+                        toastr.success('Client created successfully!');
                         // this.clients.value.push(res.data);
                     }
                 })
@@ -338,6 +346,7 @@ export default {
                     this.fachData();
                     this.editFrom = "";
                     $("#edit_new").modal("hide");
+                    toastr.success('Client Updated successfully!');
                 })
                 .catch((err) => {
                     console.error(err);
@@ -352,6 +361,7 @@ export default {
                 .then((res) => {
                     if (res.status === 200) {
                         this.fachData();
+                        toastr.success('Client Deleted successfully!');
                     }
                 })
                 .catch((err) => {

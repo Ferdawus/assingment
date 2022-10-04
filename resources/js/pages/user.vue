@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1 class="text-center">Laravel && Vue</h1>
+        <h1>User page</h1>
     </div>
 </template>
 <script>

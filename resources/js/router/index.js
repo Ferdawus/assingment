@@ -1,16 +1,40 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Index from '../text/Index.vue'
+import DashBoard from '../components/dasboard.vue'
+import Appointment from '../pages/appointment.vue'
+import User from '../pages/user.vue'
+import Client from '../text/Index.vue'
 
 const routes = [
   {
-    path: '/',
-    name: 'Index',
-    component: Index
+    path: '/admin/dashboard',
+    name: 'DashBoard',
+    component: DashBoard
   },
   {
-    path: '/add-new',
-    name: 'Add',
+    path: '/clients',
+    name: 'Client',
+    component: Client
   },
+  {
+    path: '/admin/appointment',
+    name: 'Appointment',
+    component: Appointment
+  },
+  {
+    path: '/admin/user',
+    name: 'User',
+    component: User
+  },
+//   {
+//     path: '/',
+//     name: 'Index',
+//     component: Index
+//   },
+//   {
+//     path: '/add-new',
+//     name: 'Add',
+//   },
 //   {
 //     path: '/about',
 //     name: 'About',
