@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ClientRequest;
 use App\Models\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -15,8 +16,8 @@ class ClientController extends Controller
      */
     public function index()
     {
-        $clients = DB::table('clients')->get();
-        return json_encode($clients);
+        $clients = DB::table('clients')->paginate(5);
+        return $clients;
     }
 
     /**
@@ -35,22 +36,17 @@ class ClientController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ClientRequest $request)
     {
-        // echo "dkdjk0";
-
-        // $client = array();
-        // $client['name'] = $request->name;
-        // $client['email'] = $request->email;
-        // $client['phone'] = $request->phone;
-        // $client['address'] = $request->address;
-        // DB::table('clients')->insert($client);
-        $client = Client::create([
-            'name' => request('name'),
-            'email' => request('email'),
-            'phone' => request('phone'),
-            'address' => request('address'),
-        ]);
+        //return $request->all();
+        $client = Client::create($request->all());
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $ext = $image->extention();
+            $file = time().'.'.$ext;
+            $image->storeAs('public/client',$file);
+            $client->image = $file;
+        }
         return $client;
     }
 
@@ -64,10 +60,6 @@ class ClientController extends Controller
     {
         $editClient = DB::table('clients')->where('id',$id)->first();
         return json_encode($editClient);
-
-        // return DB::table('clients')->where('id',$id)->get();
-        // $clientEdit = DB::table('clients')->where('id',$id)->get();
-        // return json_encode($clientEdit);
     }
 
     /**
@@ -105,5 +97,8 @@ class ClientController extends Controller
     {
         DB::table('clients')->where('id',$id)->delete();
        return response()->json(['message' => 'data deleted'],200);
+    }
+    public function search($field,$query){
+        return DB::table('clients')->where($field,'LIKE',"%$query%")->paginate(5);
     }
 }

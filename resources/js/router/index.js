@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Index from '../text/Index.vue'
 import DashBoard from '../components/dasboard.vue'
 import Appointment from '../pages/appointment.vue'
 import User from '../pages/user.vue'
@@ -26,11 +25,6 @@ const routes = [
     name: 'User',
     component: User
   },
-//   {
-//     path: '/',
-//     name: 'Index',
-//     component: Index
-//   },
 //   {
 //     path: '/add-new',
 //     name: 'Add',

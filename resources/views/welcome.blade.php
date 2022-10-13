@@ -11,7 +11,7 @@
     </head>
     <body>
         <div id="app_home">
-
+                <h1 class="text-center">Laravel && Vue</h1>
         </div>
 
     </body>

@@ -13,6 +13,42 @@
                         Add New
                     </button>
                 </div>
+                <div class="my-2 px-4">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <strong>Search By: </strong>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <select
+                                    v-model="queryField"
+                                    class="form-control"
+                                >
+                                    <option value="name">Name</option>
+                                    <option value="email">Email</option>
+                                    <option value="phone">Phone</option>
+                                    <option value="address">Address</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <input
+                                type="text"
+                                v-model="query"
+                                class="form-control"
+                                placeholder="Search"
+                            />
+                        </div>
+                        <div class="col-md-2">
+                            <button
+                                @click="realoadData()"
+                                class="btn btn-primary ml-2"
+                            >
+                                Reload
+                            </button>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="card-body">
                     <div class="row">
@@ -48,7 +84,6 @@
                                                 "
                                                 >Edit</a
                                             >
-                                            <!-- <router-link >Edit</router-link> -->
                                             <a
                                                 href=""
                                                 @click.prevent="
@@ -61,6 +96,15 @@
                                     </tr>
                                 </tbody>
                             </table>
+                            <pagination
+                                v-if="pagination.last_page > 1"
+                                :pagination="pagination"
+                                :offset="5"
+                                @paginate="
+                                    query === '' ? fachData() : searchData()
+                                "
+                            >
+                            </pagination>
                         </div>
                     </div>
                 </div>
@@ -86,6 +130,7 @@
                                 aria-label="Close"
                             ></button>
                         </div>
+                        <!-- {{errors}} -->
                         <form @submit.prevent="storeData()" action="">
                             <div class="modal-body">
                                 <div class="mb-3">
@@ -101,6 +146,11 @@
                                         placeholder=""
                                         v-model="form.name"
                                     />
+                                    <span
+                                        v-if="errors.name"
+                                        class="text-danger"
+                                        >{{ errors.name[0] }}</span
+                                    >
                                 </div>
                                 <div class="mb-3">
                                     <label
@@ -113,8 +163,12 @@
                                         class="form-control"
                                         id="email"
                                         v-model="form.email"
-                                        required
                                     />
+                                    <span
+                                        v-if="errors.email"
+                                        class="text-danger"
+                                        >{{ errors.email[0] }}</span
+                                    >
                                 </div>
                                 <div class="mb-3">
                                     <label
@@ -128,6 +182,11 @@
                                         id="phone"
                                         v-model="form.phone"
                                     />
+                                    <span
+                                        v-if="errors.phone"
+                                        class="text-danger"
+                                        >{{ errors.phone[0] }}</span
+                                    >
                                 </div>
                                 <div class="mb-3">
                                     <label
@@ -140,6 +199,24 @@
                                         class="form-control"
                                         id="address"
                                         v-model="form.address"
+                                    />
+                                    <span
+                                        v-if="errors.address"
+                                        class="text-danger"
+                                        >{{ errors.address[0] }}</span
+                                    >
+                                </div>
+                                <div>
+                                    <label
+                                        for="exampleFormControlInput1"
+                                        class="form-label"
+                                        >Image</label
+                                    >
+                                    <input
+                                        @change="onChangeImage()"
+                                        type="file"
+                                        class="form-control"
+                                        id="image"
                                     />
                                 </div>
                             </div>
@@ -200,6 +277,11 @@
                                         placeholder=""
                                         v-model="editFrom.name"
                                     />
+                                    <span
+                                        v-if="errors.name"
+                                        class="text-danger"
+                                        >{{ errors.name[0] }}</span
+                                    >
                                 </div>
                                 <div class="mb-3">
                                     <label
@@ -212,7 +294,6 @@
                                         class="form-control"
                                         id="email"
                                         v-model="editFrom.email"
-                                        required
                                     />
                                 </div>
                                 <div class="mb-3">
@@ -262,20 +343,22 @@
     </div>
 </template>
 <script>
-import toastr from 'toastr';
-
-
+import toastr from "toastr";
 export default {
     name: "Add",
     data() {
         return {
+            query: "",
+            queryField: "name",
             clients: [],
             form: {
                 name: "",
                 email: "",
                 phone: "",
                 address: "",
+                image: "",
             },
+
             editFrom: {
                 id: "",
                 name: "",
@@ -283,7 +366,20 @@ export default {
                 phone: "",
                 address: "",
             },
+            pagination: {
+                current_page: 1,
+            },
+            errors: [],
         };
+    },
+    watch: {
+        query: function (newQ, old) {
+            if (newQ === "") {
+                this.fachData();
+            } else {
+                this.searchData();
+            }
+        },
     },
     mounted() {
         this.fachData();
@@ -293,14 +389,42 @@ export default {
     methods: {
         fachData() {
             axios
-                .get("/api/clients/")
+                .get("/api/clients?page=" + this.pagination.current_page)
                 .then((res) => {
-                    this.clients = res.data;
-                    // console.log(res.data);
+                    this.clients = res.data.data;
+                    // console.log(this.clients = res.data.data);
+                    // console.log(this.pagination = res.data);
+                    this.pagination = res.data;
                 })
                 .catch((err) => {
-                    console.error(err);
+                    console.error(err.response.data);
                 });
+        },
+        searchData() {
+            axios
+                .get(
+                    "/api/search/client" +
+                        "/" +
+                        this.queryField +
+                        "/" +
+                        this.query +
+                        "?page=" +
+                        this.pagination.current_page
+                )
+                .then((res) => {
+                    this.clients = res.data.data;
+                    // console.log(this.clients = res.data.data);
+                    // console.log(this.pagination = res.data);
+                    this.pagination = res.data;
+                })
+                .catch((err) => {
+                    console.error(err.response.data);
+                });
+        },
+        realoadData() {
+            this.fachData();
+            this.query = "";
+            this.queryField = "name";
         },
         storeData() {
             // console.log(this.form);
@@ -308,22 +432,27 @@ export default {
             axios
                 .post("/api/clients/", this.form)
                 .then((res) => {
-                    console.log(res.status);
+                    console.log(res.data);
                     if (res.status === 201) {
                         this.fachData();
-                        this.form.name    = "";
-                        this.form.email   = "";
-                        this.form.phone   = "";
+                        this.form.name = "";
+                        this.form.email = "";
+                        this.form.phone = "";
                         this.form.address = "";
+                        this.form.image = "";
+                        this.errors = "";
                         $("#add_new").modal("hide");
-                        toastr.success('Client created successfully!');
-                        // this.clients.value.push(res.data);
+                        toastr.success("Client created successfully!");
+                        this.clients.value.push(res.data);
                     }
                 })
                 .catch((err) => {
-                    // this.errors = err.response.data.errors;
+                    this.errors = err.response.data.errors;
                     // console.error(err.response.data.errors);
                 });
+        },
+        onChangeImage(e) {
+            this.form.image = e.target.files[0];
         },
         editData(id) {
             // console.log(id);
@@ -346,7 +475,7 @@ export default {
                     this.fachData();
                     this.editFrom = "";
                     $("#edit_new").modal("hide");
-                    toastr.success('Client Updated successfully!');
+                    toastr.success("Client Updated successfully!");
                 })
                 .catch((err) => {
                     console.error(err);
@@ -361,7 +490,7 @@ export default {
                 .then((res) => {
                     if (res.status === 200) {
                         this.fachData();
-                        toastr.success('Client Deleted successfully!');
+                        toastr.success("Client Deleted successfully!");
                     }
                 })
                 .catch((err) => {
