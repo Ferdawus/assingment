@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ClientRequest;
-use App\Models\Client;
-use GuzzleHttp\Psr7\Response;
+use App\Models\MedicineCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class ClientController extends Controller
+class MedicineCategoryController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,9 +15,9 @@ class ClientController extends Controller
      */
     public function index()
     {
-        $Medicines = DB::table('medicines')->get();
-        $clients = DB::table('clients')->paginate(5);
-        return json_encode(array('Medicines' =>$Medicines,'clients'=>$clients));
+        $medicineCategories = MedicineCategory::all();
+        return $medicineCategories;
+; 
     }
 
     /**
@@ -29,7 +27,7 @@ class ClientController extends Controller
      */
     public function create()
     {
-        
+        //
     }
 
     /**
@@ -38,19 +36,10 @@ class ClientController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(ClientRequest $request)
+    public function store(Request $request)
     {
-        
-        //return $request->all();
-        $client = Client::create($request->all());
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $ext = $image->extention();
-            $file = time().'.'.$ext;
-            $image->storeAs('public/client',$file);
-            $client->image = $file;
-        }
-        return $client;
+        $medicineCategory = MedicineCategory::create($request->all());
+        return $medicineCategory;
     }
 
     /**
@@ -61,8 +50,7 @@ class ClientController extends Controller
      */
     public function show($id)
     {
-        $editClient = DB::table('clients')->where('id',$id)->first();
-        return json_encode($editClient);
+        //
     }
 
     /**
@@ -73,8 +61,7 @@ class ClientController extends Controller
      */
     public function edit($id)
     {
-        // $clientEdit = DB::table('clients')->where('id',$id)->get();
-        // return json_encode($clientEdit);
+        //
     }
 
     /**
@@ -86,8 +73,7 @@ class ClientController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // echo "update";
-       return Client::find($id)->update($request->all());
+        //
     }
 
     /**
@@ -98,10 +84,6 @@ class ClientController extends Controller
      */
     public function destroy($id)
     {
-        DB::table('clients')->where('id',$id)->delete();
-       return response()->json(['message' => 'data deleted'],200);
-    }
-    public function search($field,$query){
-        return DB::table('clients')->where($field,'LIKE',"%$query%")->paginate(5);
+        //
     }
 }

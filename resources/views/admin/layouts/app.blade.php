@@ -178,29 +178,7 @@
                         data-accordion="false">
 
 
-                        {{-- <li class="nav-item menu-open">
-                            <a href="#" class="nav-link active">
-                                <i class="nav-icon fas fa-tachometer-alt"></i>
-                                <p>
-                                    Starter Pages
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="#" class="nav-link active">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Active Page</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="#" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Inactive Page</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li> --}}
+                       
                         <li class="nav-item">
                             <router-link to="/admin/dashboard" class="nav-link" active-class="active">
                                 <i class="nav-icon fas fa-tachometer-alt"></i>
@@ -234,13 +212,40 @@
                             </router-link>
                         </li>
                         <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-cog"></i>
+                            <router-link :to="{name: 'Pharmacy'}" class="nav-link" active-class="active">
+                                <i class="nav-icon fas fa-user"></i>
                                 <p>
-                                  Settings
+                                 Pharmacy
+                                </p>
+                            </router-link>
+                        </li>
+                        <li class="nav-item">
+                            <router-link :to="{name: 'MedicineCategory'}" class="nav-link" active-class="active">
+                                <i class="nav-icon fas fa-user"></i>
+                                <p>
+                                  Medicine Category
+                                </p>
+                            </router-link>
+                        </li>
+                        {{-- <li class="nav-item menu-open">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-tachometer-alt"></i>
+                                <p>
+                                    Settings        
+                                    <i class="right fas fa-angle-left"></i>
                                 </p>
                             </a>
-                        </li>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link active">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Medicine Category</p>
+                                    </a>
+                                </li>
+                               
+                            </ul>
+                        </li> --}}
+                        
                         <li class="nav-item">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-sign-out-alt"></i>
